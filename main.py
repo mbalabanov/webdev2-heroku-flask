@@ -6,7 +6,7 @@ app = Flask(__name__)
 def hello_world():
     if request.method == "POST":
         username = request.form.get("username")
-        print(username)
+        app.logger.info(f"Form sent with username: {username}") # Log the output so that we can see in Heroku console
         return render_template("hello_world.html")
     elif request.method == "GET":
         return render_template("hello_world.html")
