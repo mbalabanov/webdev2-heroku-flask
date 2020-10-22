@@ -1,2 +1,2 @@
-# webdev2-heroku-flask
+# Web Dev2-heroku-flask
 Heroku Flask Server
