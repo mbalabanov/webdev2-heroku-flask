@@ -1,2 +1,3 @@
-# Web Dev2-heroku-flask
+# Web Dev2: Heroku-Flask
+
 Heroku Flask Server
