@@ -1,23 +1,14 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>hHello World</title>
-</head>
-<body>
-    <h1>Hello World</h1>
-    <ul>
-        <li><a href="/">Home</a></li>
-        <li><a href="/about">About</a></li>
-        <li><a href="/faq">FAQ</a></li>
-    </ul>
+{% extends "frame.html" %}
 
+{% block title %}
+Hello World
+{% endblock title %}
+
+{% block content %}
     <form method="post" action="/">
         <p>
             Please enter your name: <input type="text" name="username">
         </p>
         <button type="submit">Submit</button>
     </form>
-
-</body>
-</html>
+{% endblock content %}
