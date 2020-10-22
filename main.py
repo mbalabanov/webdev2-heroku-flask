@@ -1,18 +1,23 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 
 app = Flask(__name__)
 
-@app.route('/')
+@app.route('/', methods=["GET", "POST"])
 def hello_world():
-    return render_template('hello_world.html')
+    if request.method == "POST":
+        username = request.form.get("username")
+        print(username)
+        return render_template("hello_world.html")
+    elif request.method == "GET":
+        return render_template("hello_world.html")
 
-@app.route('/about')
+@app.route('/about', methods=["GET"])
 def about():
-    return render_template('about.html')
+    return render_template("about.html")
 
-@app.route('/faq')
+@app.route('/faq', methods=["GET"])
 def faq():
-    return render_template('faq.html')
+    return render_template("faq.html")
 
 if __name__ == '__main__':
     app.run(port=7890)
