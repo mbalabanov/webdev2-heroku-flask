@@ -26,12 +26,16 @@
         </nav>
 
         <div class="row">
-            <div class="col-8 offset-2">
+            <div class="col-12">
                 <h1>
                     {% block title %}
                     {% endblock title %}
                 </h1>
+            </div>
+        </div>
 
+        <div class="row">
+            <div class="col-8 offset-2">
                 {% block content %}
                 {% endblock content %}
             </div>
