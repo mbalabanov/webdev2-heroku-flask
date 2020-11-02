@@ -1,2 +1,4 @@
 Flask
 gunicorn
+sqla-wrapper
+psycopg2

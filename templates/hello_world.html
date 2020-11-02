@@ -5,22 +5,36 @@ Hello World
 {% endblock title %}
 
 {% block content %}
-<h2 class="mt-4">Login</h2>
-<form method="post" action="/">
-    <div class="form-group">
-        <label for="exampleUsername1">Username</label>
-        <input type="email" name="username" class="form-control" id="exampleUsername1" aria-describedby="usernameHelp">
-        <small id="usernameHelp" class="form-text text-muted">We'll never share your username with anyone else.</small>
-    </div>
-    <div class="form-group">
-        <label for="exampleInputPassword1">Password</label>
-        <input type="password" name="password" class="form-control" id="exampleInputPassword1">
-    </div>
-    <div class="form-group">
-        <label for="exampleInputPassword2">Repeat password</label>
-        <input type="password" name="password-repeat" class="form-control" id="exampleInputPassword2">
-    </div>
-    <button type="submit" class="btn btn-primary">Login</button>
-</form>
 
+<div class="row">
+    <div class="col-6 offset-3">
+
+        {% if not logged_in%}
+
+        <h2 class="mt-4">Login</h2>
+        <form method="post" action="/">
+            <div class="form-group">
+                <label for="exampleUsername1">Username</label>
+                <input type="text" name="username" class="form-control" id="exampleUsername1">
+                <small id="usernameHelp" class="form-text text-muted">We'll never share your username with anyone
+                    else.</small>
+            </div>
+            <div class="form-group">
+                <label for="exampleInputPassword1">Password</label>
+                <input type="password" name="password" class="form-control" id="exampleInputPassword1">
+            </div>
+            <div class="form-group">
+                <label for="exampleInputPassword2">Repeat password</label>
+                <input type="password" name="repeat" class="form-control" id="exampleInputPassword2">
+            </div>
+            <button type="submit" class="btn btn-primary">Login</button>
+        </form>
+
+        {% else %}
+
+        <h3>User already logged in</h3>
+
+        {% endif %}
+    </div>
+</div>
 {% endblock content %}
