@@ -1,10 +1,9 @@
 import hashlib
 import uuid
 
-from flask import Flask, render_template, request, make_response
-from werkzeug.utils import redirect
+from flask import Flask, render_template, request, make_response, redirect
 
-from model import db, User
+from model import db, User, Post
 
 app = Flask(__name__)
 
@@ -12,8 +11,10 @@ db.create_all()
 
 WEBSITE_LOGIN_COOKIE_NAME = "science/session_token"
 
+
 @app.route('/', methods=["GET", "POST"])
 def hello_world():
+
     if request.method == "POST":
         username = request.form.get("username")
         password = request.form.get("password")
@@ -32,15 +33,17 @@ def hello_world():
         if user is None:
             password_hash = hashlib.sha256(password.encode()).hexdigest()
             user = User(username=username, password_hash=password_hash, session_cookie=session_cookie)
-
             db.add(user)
             db.commit()
             app.logger.info(f"User {username} is registered")
         else:
+            user.session_cookie = session_cookie
+            db.add(user)
+            db.commit()
             app.logger.info(f"User {username} is logged in")
 
         response = make_response(redirect('/'))
-        response.set_cookie(WEBSITE_LOGIN_COOKIE_NAME, "dummy_wert", httponly=True, samesite="Strict")
+        response.set_cookie(WEBSITE_LOGIN_COOKIE_NAME, session_cookie, httponly=True, samesite='Strict')
         return response
 
     elif request.method == "GET":
@@ -67,6 +70,27 @@ def about():
 def faq():
     return render_template("faq.html")
 
+@app.route('/blog', methods=["GET", "POST"])
+def blog():
+    cookie = request.cookies.get(WEBSITE_LOGIN_COOKIE_NAME)
+    user = None
+
+    if cookie is not None:
+        user = db.query(User).filter(User.session_cookie == cookie).first()
+
+    if user is None:
+        logged_in = False
+    else:
+        logged_in = True
+
+    if request.method == "POST":
+        title = request.form.get("posttitle")
+        content = request.form.get("postcontent")
+        post = Post(title=title, content=content, user_id=user)
+        db.add(post)
+        db.commit()
+
+    return render_template("blog.html", logged_in=logged_in)
 
 if __name__ == '__main__':
     app.run(host='localhost', port=7890)
