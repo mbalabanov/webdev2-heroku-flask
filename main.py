@@ -90,7 +90,9 @@ def login():
         user = None
 
         if cookie is not None:
-            user = db.query(User).filter(User.session_cookie == cookie).first()
+            user = db.query(User).filter(User.session_cookie == cookie)\
+            .filter(User.session_expiry_datetime >= datetime.datetime.now())\
+            .first()
 
         if user is None:
             logged_in = False
@@ -101,6 +103,7 @@ def login():
 
 
 @app.route('/about', methods=["GET"])
+@require_session_token
 def about():
     return render_template("about.html")
 
@@ -114,18 +117,15 @@ def faq():
 @require_session_token
 def blog():
 
-    session_token = request.cookies.get(WEBSITE_LOGIN_COOKIE_NAME)
-    bloguser = db.query(User) \
-        .filter_by(session_cookie=session_token) \
-        .filter(User.session_expiry_datetime >= datetime.datetime.now()) \
-        .first()
+    current_user = request.user
 
     if request.method == "POST":
         title = request.form.get("posttitle")
         content = request.form.get("postcontent")
-        post = Post(title=title, content=content, user_id=bloguser)
+        post = Post(title=title, content=content, user_id=current_user)
         db.add(post)
         db.commit()
+
     return render_template("blog.html")
 
 if __name__ == '__main__':
