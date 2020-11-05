@@ -7,14 +7,8 @@ Blog
 {% block content %}
 <div class="row">
     <div class="col-6 offset-3">
-
-        {% if not logged_in%}
-        <p>You are not logged in.</p>
-        <a class="btn btn-primary" href="/">Login</a>
-
-        {% else %}
         <p>You are logged in.</p>
-        <form method="post" action="/">
+        <form method="post">
             <div class="form-group">
                 <label for="posttitle">Post Title</label>
                 <input type="text" name="posttitle" class="form-control" id="posttitle">
@@ -25,7 +19,6 @@ Blog
             </div>
             <button type="submit" class="btn btn-primary">Post</button>
         </form>
-        {% endif %}
     </div>
 </div>
 {% endblock content %}

@@ -1,3 +1,5 @@
+import datetime
+
 from sqla_wrapper import SQLAlchemy
 
 db = SQLAlchemy("sqlite:///blog.sqlite")
@@ -13,6 +15,7 @@ class User(db.Model):
     username = db.Column(db.String(255), nullable=False, unique=True)
     password_hash = db.Column(db.String(255), nullable=False)
     session_cookie = db.Column(db.String(255), nullable=True, unique=True)
+    session_expiry_datetime = db.Column(db.DateTime, default=datetime.datetime.now)
 
 class Post(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
