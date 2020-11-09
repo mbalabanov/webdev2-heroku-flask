@@ -4,10 +4,31 @@
 Blog
 {% endblock title %}
 
+{% include 'navigation.html' %}
+
 {% block content %}
+
+{% for post in posts %}
+
+
+
+
+<div class="d-flex justify-content-center">
+    <div class="jumbotron">
+        <h1 class="display-4">{{post.title}}</h1>
+        <p class="lead">{{post.content}}</p>
+        <hr class="my-4">
+        <p>{{post.user.username}}</p>
+        <p><em>{{post.date}}</em></p>
+        <a class="btn btn-primary btn-lg" href="/posts/{{post.id}}" role="button">Learn more</a>
+    </div>
+</div>
+
+{% endfor %}
+
+
 <div class="row">
     <div class="col-6 offset-3">
-        <p>You are logged in.</p>
         <form method="post">
             <div class="form-group">
                 <label for="posttitle">Post Title</label>

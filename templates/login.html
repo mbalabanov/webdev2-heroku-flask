@@ -4,37 +4,38 @@
 Hello World
 {% endblock title %}
 
+{% include 'navigation.html' %}
+
+
 {% block content %}
+<div class="d-flex justify-content-center">
 
-<div class="row">
-    <div class="col-6 offset-3">
+    {% if not logged_in %}
 
-        {% if not logged_in%}
+    <form method="post">
+        <div class="form-group">
+            <label for="exampleInputUsername1">Username</label>
+            <input type="text" name="username" class="form-control" id="exampleInputUsername1"
+                   aria-describedby="usernameHelp">
+            <small id="usernameHelp" class="form-text text-muted">We'll never share your username with anyone
+                else.</small>
+        </div>
+        <div class="form-group">
+            <label for="exampleInputPassword1">Password</label>
+            <input type="password" name="password" class="form-control" id="exampleInputPassword1">
+        </div>
+        <div class="form-group">
+            <label for="exampleInputPasswordRepeat1">Password-Repeat</label>
+            <input type="password" name="repeat" class="form-control" id="exampleInputPasswordRepeat1">
+        </div>
+        <button type="submit" class="btn btn-primary">Login</button>
+    </form>
 
-        <h2 class="mt-4">Login</h2>
-        <form method="post">
-            <div class="form-group">
-                <label for="exampleUsername1">Username</label>
-                <input type="text" name="username" class="form-control" id="exampleUsername1">
-                <small id="usernameHelp" class="form-text text-muted">We'll never share your username with anyone
-                    else.</small>
-            </div>
-            <div class="form-group">
-                <label for="exampleInputPassword1">Password</label>
-                <input type="password" name="password" class="form-control" id="exampleInputPassword1">
-            </div>
-            <div class="form-group">
-                <label for="exampleInputPassword2">Repeat password</label>
-                <input type="password" name="repeat" class="form-control" id="exampleInputPassword2">
-            </div>
-            <button type="submit" class="btn btn-primary">Login</button>
-        </form>
+    {% else %}
 
-        {% else %}
+    <h1>You are logged in!</h1>
 
-        <h3>User already logged in</h3>
-
-        {% endif %}
-    </div>
+    {% endif %}
 </div>
+
 {% endblock content %}

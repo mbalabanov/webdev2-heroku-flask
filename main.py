@@ -4,7 +4,7 @@ import uuid
 
 from flask import Flask, render_template, request, make_response, redirect, url_for
 
-from model import db, User, Post
+from model import db, User, Post, Comment
 
 app = Flask(__name__)
 
@@ -16,6 +16,7 @@ COOKIE_DURATION = 900  # in seconds
 
 def require_session_token(func):
     """Decorator to require authentication to access routes"""
+
     def wrapper(*args, **kwargs):
         session_token = request.cookies.get(WEBSITE_LOGIN_COOKIE_NAME)
         redirect_url = request.path or '/'
@@ -24,16 +25,17 @@ def require_session_token(func):
             app.logger.error('no token in request')
             return redirect(url_for('login', redirectTo=redirect_url))
 
-        user = db.query(User)\
-            .filter_by(session_cookie=session_token)\
-            .filter(User.session_expiry_datetime >= datetime.datetime.now())\
+        user = db.query(User) \
+            .filter_by(session_cookie=session_token) \
+            .filter(User.session_expiry_datetime >= datetime.datetime.now()) \
             .first()
 
         if not user:
             app.logger.error(f'token {session_token} not valid')
             return redirect(url_for('login', redirectTo=redirect_url))
 
-        app.logger.info(f'authenticated user {user.username} with token {user.session_cookie} valid until {user.session_expiry_datetime.isoformat()}')
+        app.logger.info(
+            f'authenticated user {user.username} with token {user.session_cookie} valid until {user.session_expiry_datetime.isoformat()}')
         request.user = user
         return func(*args, **kwargs)
 
@@ -44,7 +46,8 @@ def require_session_token(func):
 
 @app.route('/', methods=["GET"])
 def index():
-    return "You are Home! Enter /login to continue"
+    return render_template("index.html")
+
 
 @app.route('/login', methods=["GET", "POST"])
 def login():
@@ -90,9 +93,10 @@ def login():
         user = None
 
         if cookie is not None:
-            user = db.query(User).filter(User.session_cookie == cookie)\
-            .filter(User.session_expiry_datetime >= datetime.datetime.now())\
-            .first()
+            user = db.query(User) \
+                .filter_by(session_cookie=cookie) \
+                .filter(User.session_expiry_datetime >= datetime.datetime.now())\
+                .first()
 
         if user is None:
             logged_in = False
@@ -103,7 +107,6 @@ def login():
 
 
 @app.route('/about', methods=["GET"])
-@require_session_token
 def about():
     return render_template("about.html")
 
@@ -112,6 +115,13 @@ def about():
 @require_session_token
 def faq():
     return render_template("faq.html")
+
+
+@app.route('/logout', methods=["GET"])
+def logout():
+    # TODO
+    pass
+
 
 @app.route('/blog', methods=["GET", "POST"])
 @require_session_token
@@ -122,11 +132,40 @@ def blog():
     if request.method == "POST":
         title = request.form.get("posttitle")
         content = request.form.get("postcontent")
-        post = Post(title=title, content=content, user_id=current_user)
+        post = Post(
+            title=title, content=content,
+            user=current_user
+        )
         db.add(post)
         db.commit()
+        return redirect(url_for('blog'))
 
-    return render_template("blog.html")
+    if request.method == "GET":
+        posts = db.query(Post).all()
+        return render_template("blog.html", posts=posts)
+
+
+@app.route('/posts/<post_id>', methods=["GET", "POST"])
+@require_session_token
+def posts(post_id):
+    current_user = request.user
+    post = db.query(Post).filter(Post.id == post_id).first()
+
+    if request.method == "POST":
+        content = request.form.get("content")
+        comment = Comment(
+            content=content,
+            post=post,
+            user=current_user
+        )
+        db.add(comment)
+        db.commit()
+        return redirect('/posts/{}'.format(post_id))
+
+    elif request.method == "GET":
+        comments = db.query(Comment).filter(Comment.post_id == post_id).all()
+        return render_template('posts.html', post=post, comments=comments)
+
 
 if __name__ == '__main__':
     app.run(host='localhost', port=7890)
