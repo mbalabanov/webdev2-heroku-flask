@@ -1,0 +1,44 @@
+{% extends "frame.html" %}
+
+{% block title %}
+Registration
+{% endblock title %}
+
+{% include 'navigation.html' %}
+
+
+{% block content %}
+<div class="d-flex justify-content-center">
+
+    {% if not logged_in %}
+        <form method="post">
+            <h1>Register</h1>
+            <div class="form-group">
+                <label for="exampleInputUsername1">Username</label>
+                <input type="text" name="username" class="form-control" id="exampleInputUsername1"
+                       aria-describedby="usernameHelp">
+            </div>
+            <div class="form-group">
+                <label for="emailaddress">Email Address</label>
+                <input type="email" name="email" class="form-control" id="emailaddress"
+                       aria-describedby="emailaddress">
+            </div>
+            <div class="form-group">
+                <label for="exampleInputPassword1">Password</label>
+                <input type="password" name="password" class="form-control" id="exampleInputPassword1">
+            </div>
+            <div class="form-group">
+                <label for="exampleInputPasswordRepeat1">Password-Repeat</label>
+                <input type="password" name="repeat" class="form-control" id="exampleInputPasswordRepeat1">
+            </div>
+            <button type="submit" class="btn btn-primary">Register</button>
+        </form>
+
+    {% else %}
+
+    <h1>You are logged in!</h1>
+
+    {% endif %}
+</div>
+
+{% endblock content %}

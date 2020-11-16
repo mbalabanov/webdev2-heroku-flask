@@ -13,31 +13,32 @@ Posts - {{post.title}}
         <h2 class="display-4">{{post.title}}</h2>
         <p class="lead">{{post.content}}</p>
         <p><strong>{{post.user.username}}</strong></p>
-        <p><em>{{post.date}}</em></p>
     </div>
 </div>
-<div class="d-flex justify-content-center">
-    {% if comments %}
-        <h1>Comments</h1>
-    {% else %}
-        <h1>No Comments</h1>
-    {% endif %}
 
-    {% for comment in comments %}
-    <div class="alert alert-light" role="alert">
-        <p>
-            {{comment.content}}<br/>
-            <em>{{comment.user.username}}</em>, <sub>{{comment.date}}</sub>
-        </p>
-    </div>
-    {% endfor %}
+{% if comments %}
+    <h1>Comments</h1>
+{% else %}
+    <h1>No Comments</h1>
+{% endif %}
+
+{% for comment in comments %}
+<div class="alert alert-light" role="alert">
+    <p>
+        {{comment.text}}
+    </p>
+    <p>
+        {{comment.user.username}}
+    </p>
 </div>
+{% endfor %}
+
 <div class="row">
     <div class="col-6 offset-3">
         <form method="post">
             <div class="form-group">
                 <label for="commentInput">Comment</label>
-                <input type="text" name="content" class="form-control" placeholder="your-comment" id="commentInput">
+                <input type="text" name="text" class="form-control" placeholder="your-comment" id="commentInput">
             </div>
             <button type="submit" class="btn btn-primary">Send</button>
         </form>

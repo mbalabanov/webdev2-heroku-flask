@@ -1,8 +1,10 @@
 import datetime
+import os
 
 from sqla_wrapper import SQLAlchemy
 
-db = SQLAlchemy("sqlite:///blog.sqlite")
+DEFAULT_DB = "sqlite:///blog.sqlite"
+db = SQLAlchemy(os.getenv("DATABASE_URL", DEFAULT_DB))
 
 
 # 3 Klassen:
@@ -12,25 +14,41 @@ db = SQLAlchemy("sqlite:///blog.sqlite")
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    created = db.Column(db.DateTime, default=datetime.datetime.now)
+    updated = db.Column(db.DateTime, default=datetime.datetime.now, onupdate=datetime.datetime.now)
+
     username = db.Column(db.String(255), nullable=False, unique=True)
     password_hash = db.Column(db.String(255), nullable=False)
+    email = db.Column(db.Integer, unique=True)
+
     session_cookie = db.Column(db.String(255), nullable=True, unique=True)
     session_expiry_datetime = db.Column(db.DateTime)
+
+    posts = db.relationship('Post', backref='users')
+    comments = db.relationship('Comment', backref='users')
 
 
 class Post(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    created = db.Column(db.DateTime, default=datetime.datetime.now)
+    updated = db.Column(db.DateTime, default=datetime.datetime.now, onupdate=datetime.datetime.now)
+
     title = db.Column(db.String)
-    content = db.Column(db.String)
-    date = db.Column(db.Date, default=datetime.datetime.now())
+    text = db.Column(db.String)
+
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"))
     user = db.relationship(User)
+
+    comments = db.relationship('Comment', backref='posts')
 
 
 class Comment(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    content = db.Column(db.String)
-    date = db.Column(db.Date, default=datetime.datetime.now())
+    created = db.Column(db.DateTime, default=datetime.datetime.now)
+    updated = db.Column(db.DateTime, default=datetime.datetime.now, onupdate=datetime.datetime.now)
+
+    text = db.Column(db.String)
+
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"))
     user = db.relationship(User)
 

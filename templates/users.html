@@ -1,0 +1,31 @@
+{% extends "frame.html" %}
+
+{% block title %}
+Users
+{% endblock title %}
+
+{% include 'navigation.html' %}
+
+{% block content %}
+
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">First</th>
+      <th scope="col">Last</th>
+      <th scope="col">Handle</th>
+    </tr>
+  </thead>
+  <tbody>
+
+{% for user in users %}
+
+    <tr>
+        <td>{{user.username}}</td>
+        <td>{{user.email}}</td>
+    </tr>
+
+{% endfor %}
+
+{% endblock content %}
