@@ -13,22 +13,23 @@ Posts - {{post.title}}
         <h2 class="display-4">{{post.title}}</h2>
         <p class="lead">{{post.text}}</p>
         <p><strong>{{post.user.username}}</strong></p>
-{% if comments %}
-    <h1>Comments</h1>
-{% else %}
-    <h2>No Comments</h2>
-{% endif %}
+        
+        {% if comments %}
+            <h1>Comments</h1>
+        {% else %}
+            <h2>No Comments</h2>
+        {% endif %}
 
-{% for comment in comments %}
-<div class="alert alert-secondary" role="alert">
-    <p>
-        {{comment.text}}
-    </p>
-    <p>
-        {{comment.user.username}}
-    </p>
-</div>
-{% endfor %}
+        {% for comment in comments %}
+        <div class="alert alert-secondary" role="alert">
+            <p>
+                {{comment.text}}
+            </p>
+            <p>
+                {{comment.user.username}}
+            </p>
+        </div>
+        {% endfor %}
     </div>
 </div>
 
