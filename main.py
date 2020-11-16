@@ -1,6 +1,5 @@
 import datetime
 import hashlib
-import os
 import uuid
 
 from flask import Flask, render_template, request, make_response, redirect, url_for, flash
@@ -100,7 +99,7 @@ def login():
         expiry_time = datetime.datetime.now() + datetime.timedelta(seconds=COOKIE_DURATION)
 
         if user is None:
-            flash("Username or password is wrong", "warning")
+            flash("warning", "Username or password is wrong")
             app.logger.info(f"User {username} failed to login with wrong password.")
             redirect_url = request.args.get('redirectTo')
             return redirect(url_for('login', redirectTo=redirect_url))
@@ -143,13 +142,13 @@ def registration():
         repeat = request.form.get("repeat")
 
         if password!=repeat:
-            flash("Password and repeat did not match!", "warning")
+            flash("warning", "Password and repeat did not match!")
             return redirect(url_for("registration"))
 
         # check if username is already taken in Database!
         user = db.query(User).filter_by(username=username).first()
         if user:
-            flash("Username is already taken", "warning")
+            flash("warning", "Username is already taken")
             return redirect(url_for('registration'))
 
         password_hash = hashlib.sha256(password.encode()).hexdigest()
@@ -164,7 +163,7 @@ def registration():
                     session_expiry_datetime=session_expiry_datetime)
         db.add(user)
         db.commit()
-        flash("Registration Successful!", "success")
+        flash("success", "Registration Successful!")
         response = make_response(redirect(url_for('index')))
         response.set_cookie(WEBSITE_LOGIN_COOKIE_NAME, session_cookie, httponly=True, samesite='Strict')
         return response
