@@ -52,7 +52,7 @@ def test_mail():
         msg = Message(
             subject="Flask WebDev Project Test Email",
             sender=SENDER,
-            recipients=["beachvolley.vienna.park@gmail.com"]
+            recipients=[SENDER]
         )
         msg.body = "There is a new Blogpost!, Check this out!"
         mail.send(msg)
