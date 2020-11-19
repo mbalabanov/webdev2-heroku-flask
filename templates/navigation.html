@@ -8,14 +8,28 @@
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
             <li class="nav-item active">
-                <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
+                <a class="nav-link" href="/">Home<span class="sr-only">(current)</span></a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="https://github.com">Github</a>
+                <a class="nav-link" href="https://github.com/PatrickVienne/wd2_2020_10_flask">Github</a>
+            </li>
+
+            {% if user %}
+
+            <li class="nav-item">
+                <a class="nav-link" href="/logout">Logout</a>
+            </li>
+
+            {% else %}
+
+            <li class="nav-item">
+                <a class="nav-link" href="/login">Login</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="/registration">Registration</a>
             </li>
+
+            {% endif %}
 
             <li class="nav-item">
                 <a class="nav-link" href="/faq">FAQ</a>
@@ -24,14 +38,10 @@
                 <a class="nav-link" href="/about">About</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="/users">Users</a>
-            </li>
-            <li class="nav-item">
                 <a class="nav-link" href="/blog">Blog</a>
             </li>
-        </ul>
-        <a class="btn btn-light mx-4" href="/logout">logout</a>
 
+        </ul>
         <form class="form-inline my-2 my-lg-0">
             <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
             <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>

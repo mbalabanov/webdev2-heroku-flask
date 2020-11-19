@@ -2,3 +2,6 @@ Flask
 gunicorn
 sqla-wrapper
 psycopg2
+Flask-Mail==0.9.1
+redis==3.5.3
+tinydb==4.2.0
