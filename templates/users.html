@@ -11,20 +11,29 @@ Users
 <table class="table">
   <thead>
     <tr>
-      <th scope="col">Username</th>
-      <th scope="col">Email Address</th>
+        <th scope="col">#</th>
+        <th scope="col">Username</th>
+        <th scope="col">Email Address</th>
+        <th scope="col">Created On</th>
+        <th scope="col">Updated On</th>
+        <th scope="col">User Role</th>
     </tr>
   </thead>
   <tbody>
 
-{% for user in users %}
+    {% for user in users %}
 
     <tr>
+        <td>{{user.id}}</td>
         <td>{{user.username}}</td>
         <td>{{user.email}}</td>
+        <td>{{user.created}}</td>
+        <td>{{user.updated}}</td>
+        <td>{{user.role}}</td>
     </tr>
 
-{% endfor %}
+    {% endfor %}
+
   </tbody>
-  </table>
+</table>
 {% endblock content %}

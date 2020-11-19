@@ -19,8 +19,8 @@ class User(db.Model):
 
     username = db.Column(db.String(255), nullable=False, unique=True)
     password_hash = db.Column(db.String(255), nullable=False)
-    email = db.Column(db.String, unique=True)
-
+    email = db.Column(db.String(255), unique=True)
+    role = db.Column(db.String(55), nullable=False, default='admin')
     session_cookie = db.Column(db.String(255), nullable=True, unique=True)
     session_expiry_datetime = db.Column(db.DateTime)
 

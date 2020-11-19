@@ -12,8 +12,8 @@ Posts - {{post.title}}
     <div class="container">
         <h2 class="display-4">{{post.title}}</h2>
         <p class="lead">{{post.text}}</p>
-        <p><strong>{{post.user.username}}</strong></p>
-        
+        <p>{{post.user.username}}</p>
+
         {% if comments %}
             <h1>Comments</h1>
         {% else %}
