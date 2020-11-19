@@ -40,7 +40,8 @@ COOKIE_DURATION = 900  # in seconds
 
 # Make a regular expression for validating an Email
 # for custom mails use: '^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w+$'
-EMAIL_REGEX = '^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w{2,3}$'
+#EMAIL_REGEX = '^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w{2,3}$'
+EMAIL_REGEX = '^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$'
 
 # EMAIL SENDER FOR ALL SITE NOTIFICATIONS
 SENDER = "beachvolley.vienna.park@gmail.com"
