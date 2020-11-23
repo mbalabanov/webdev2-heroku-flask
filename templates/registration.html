@@ -5,7 +5,15 @@ Registration
 {% endblock title %}
 
 {% block content %}
-<div class="d-flex justify-content-center">
+
+<div class="row">
+    <div class="col-md-12 text-center">
+        <h2>Registration</h2>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-12">
 
     {% if not logged_in %}
         <form method="post">
@@ -36,6 +44,7 @@ Registration
     <h1>You are logged in!</h1>
 
     {% endif %}
-</div>
 
+    </div>
+</div>
 {% endblock content %}
