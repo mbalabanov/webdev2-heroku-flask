@@ -5,6 +5,7 @@ Posts - {{post.title}}
 {% endblock title %}
 
 {% block content %}
+
 <div class="row">
     <div class="col-md-12 text-center">
         <h2>Registration</h2>
@@ -12,7 +13,7 @@ Posts - {{post.title}}
 </div>
 
 <div class="row mt-4">
-    <div class="col-md-12">
+    <div class="col-md-8 offset-md-2">
         <h2 class="display-4">{{post.title}}</h2>
         <p class="lead">{{post.text}}</p>
         <p>{{post.user.username}}</p>
@@ -47,6 +48,5 @@ Posts - {{post.title}}
         </form>
     </div>
 </div>
-{% endblock content %}
 
-{% include 'footer.html' %}
+{% endblock content %}
