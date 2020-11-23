@@ -8,21 +8,21 @@
 
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
-            <li class="nav-item">
+            <li class="nav-item {{active1}}">
                 <a class="nav-link" href="/blog">Blog</a>
             </li>
-            <li class="nav-item">
+            <li class="nav-item {{active2}}">
                 <a class="nav-link" href="/users">Users</a>
             </li>
-            <li class="nav-item">
+            <li class="nav-item {{active3}}">
                 <a class="nav-link" href="/faq">FAQ</a>
             </li>
-            <li class="nav-item">
+            <li class="nav-item {{active4}}">
                 <a class="nav-link" href="/about">About</a>
             </li>
 
             {% if not user %}
-            <li class="nav-item">
+            <li class="nav-item {{active0}}">
                 <a class="nav-link" href="/registration">Register</a>
             </li>
             {% endif %}

@@ -49,21 +49,6 @@ EMAIL_REGEX = '^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$'
 SENDER = "beachvolley.vienna.park@gmail.com"
 
 
-@app.route("/test-mail")
-def test_mail():
-    try:
-        msg = Message(
-            subject="Flask WebDev Project Test Email",
-            sender=SENDER,
-            recipients=[SENDER]
-        )
-        msg.body = "There is a new Blogpost!, Check this out!"
-        mail.send(msg)
-        return "Flask sent your mail!"
-    except Exception as e:
-        return str(e)
-
-
 def check_email(email: str) -> bool:
     return bool(re.search(EMAIL_REGEX, email))
 
@@ -244,19 +229,19 @@ def registration():
         return response
 
     elif request.method == "GET":
-        return render_template("registration.html", user=request.user)
+        return render_template("registration.html", user=request.user, active0="active")
 
 
 @app.route('/about', methods=["GET"])
 @provide_user
 def about():
-    return render_template("about.html", user=request.user)
+    return render_template("about.html", user=request.user, active4="active")
 
 
 @app.route('/faq', methods=["GET"])
 @require_session_token
 def faq():
-    return render_template("faq.html", user=request.user)
+    return render_template("faq.html", user=request.user, active3="active")
 
 
 @app.route('/logout', methods=["GET"])
@@ -312,7 +297,7 @@ def blog():
 
     if request.method == "GET":
         posts = db.query(Post).all()
-        return render_template("blog.html", posts=posts, user=request.user)
+        return render_template("blog.html", posts=posts, user=request.user, active1="active")
 
 
 @app.route('/posts/<post_id>', methods=["GET", "POST"])
@@ -334,7 +319,7 @@ def posts(post_id):
 
     elif request.method == "GET":
         comments = db.query(Comment).filter(Comment.post_id == post_id).all()
-        return render_template('posts.html', post=post, comments=comments, user=request.user)
+        return render_template('posts.html', post=post, comments=comments, user=request.user, active1="active")
 
 
 @app.route('/users', methods=["GET"])
@@ -344,7 +329,7 @@ def users():
 
     if request.method == "GET":
         allusers = db.query(User).all()
-        return render_template("users.html", users=allusers, user=request.user)
+        return render_template("users.html", users=allusers, user=request.user, active2="active")
 
 @app.errorhandler(404)
 @provide_user
