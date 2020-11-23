@@ -12,10 +12,6 @@ import email_config
 import redis_client
 
 
-
-
-
-
 app = Flask(__name__)
 
 # Keep this secret!
@@ -340,6 +336,15 @@ def posts(post_id):
         comments = db.query(Comment).filter(Comment.post_id == post_id).all()
         return render_template('posts.html', post=post, comments=comments, user=request.user)
 
+
+@app.route('/users', methods=["GET"])
+@require_session_token
+def users():
+    current_user = request.user
+
+    if request.method == "GET":
+        allusers = db.query(User).all()
+        return render_template("users.html", users=allusers, user=request.user)
 
 @app.errorhandler(404)
 @provide_user
