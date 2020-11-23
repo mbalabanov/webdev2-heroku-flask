@@ -16,26 +16,26 @@ Home
 <div class="row mt-4">
     <div class="col-md-4">
         <div class="text-center border rounded-lg p-4 m-2">
-            <img src= {{ url_for('static', filename = 'images/square1.jpg') }} alt="First abstract square" title="Mlog abstract square" class="img-fluid rounded-lg">
-            <h3>Register a User Account</h3>
+            <a href="/login"><img src= {{ url_for('static', filename = 'images/square1.jpg') }} alt="First abstract square" title="Mlog abstract square" class="img-fluid rounded-lg"></a>
+            <h4><a href="/login">Register a User Account</a></h4>
             <p>Please register a user account and then login.</p>
-            <a class="btn btn-primary" href="/login">Register</a>
+            <a class="btn btn-primary btn-sm" href="/login">Register</a>
         </div>
     </div>
     <div class="col-md-4">
         <div class="text-center border rounded-lg p-4 m-2">
-            <img src= {{ url_for('static', filename = 'images/square2.jpg') }} alt="Second abstract square" title="Mlog abstract square" class="img-fluid rounded-lg">
-            <h3>View or Write a Blog Post</h3>
+            <a href="/blog"><img src= {{ url_for('static', filename = 'images/square2.jpg') }} alt="Second abstract square" title="Mlog abstract square" class="img-fluid rounded-lg"></a>
+            <h4><a href="/blog">View or Write a Blog Post</a></h4>
             <p>Read the blog posts, comment on them or write your own.</p>
-            <a class="btn btn-primary" href="/blog">Blog</a>
+            <a class="btn btn-primary btn-sm" href="/blog">Blog</a>
         </div>
     </div>
     <div class="col-md-4">
         <div class="text-center border rounded-lg p-4 m-2">
-            <img src= {{ url_for('static', filename = 'images/square3.jpg') }} alt="First abstract square" title="Mlog abstract square" class="img-fluid rounded-lg">
-            <h3>Learn More about the Project</h3>
+            <a href="https://github.com/mbalabanov/webdev2-heroku-flask" target="_blank"><img src= {{ url_for('static', filename = 'images/square3.jpg') }} alt="First abstract square" title="Mlog abstract square" class="img-fluid rounded-lg"></a>
+            <h4><a href="https://github.com/mbalabanov/webdev2-heroku-flask" target="_blank">Learn More about the Project</a></h4>
             <p>Read the blog posts, comment on them or write your own.</p>
-            <a class="btn btn-primary" href="https://github.com/mbalabanov/webdev2-heroku-flask" target="_blank">Github</a>
+            <a class="btn btn-primary btn-sm" href="https://github.com/mbalabanov/webdev2-heroku-flask" target="_blank">Github</a>
         </div>
     </div>
 </div>
