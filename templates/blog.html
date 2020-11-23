@@ -16,11 +16,11 @@ Blog
 
 <div class="row my-4">
     <div class="div-md-10 offset-md-1">
-        <h2 class="display-4"><a href="/posts/{{post.id}}">{{post.title}}</a></h2>
+        <h3 class="display-4"><a href="/posts/{{post.id}}">{{post.title}}</a></h3>
+        <p><em>{{post.created}}</em></p>
+        <p>Written by <span class="badge badge-secondary p-2">{{post.user.username}}</span></p>
         <p class="lead">{{post.text}}</p>
-        <p>{{post.user.username}}</p>
-        <p><em>{{post.date}}</em></p>
-        <a class="btn btn-primary" href="/posts/{{post.id}}" role="button">Learn more</a>
+        <a class="btn btn-primary" href="/posts/{{post.id}}" role="button">Read more</a>
         <hr class="my-4">
     </div>
 </div>
@@ -31,7 +31,7 @@ Blog
 <div class="row">
     <div class="col-8 offset-2">
         <div class="alert alert-primary" role="alert">
-            <h4>Write a new blog post</h4>
+            <h4>Write a new Blog Post</h4>
             <form method="post">
                 <div class="form-group">
                     <label for="posttitle">Post Title</label>

@@ -13,8 +13,8 @@ FAQ
 </div>
 
 <div class="row">
-    <div class="col-md-10 offset-md-1">
-        <div class="accordion" id="accordionExample">
+    <div class="col-md-8">
+        <div class="accordion shadow" id="accordionExample">
             <div class="card">
                 <div class="card-header" id="headingOne">
                     <h2 class="mb-0">
@@ -81,6 +81,9 @@ FAQ
                 </div>
             </div>
         </div>
+    </div>
+    <div class="col-md-4">
+        <img src= {{ url_for('static', filename = 'images/abstract2.jpg') }} alt="Abstract image" title="Mlog abstract image" class="img-fluid rounded-lg">
     </div>
 </div>
 {% endblock content %}
