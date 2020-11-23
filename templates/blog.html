@@ -4,23 +4,18 @@
 Blog
 {% endblock title %}
 
-{% include 'navigation.html' %}
-
 {% block content %}
 
 {% for post in posts %}
 
-
-
-
-<div class="d-flex justify-content-center">
-    <div class="jumbotron">
-        <h1 class="display-4">{{post.title}}</h1>
+<div class="row my-4">
+    <div class="div-md-10 offset-md-1">
+        <h2 class="display-4"><a href="/posts/{{post.id}}">{{post.title}}</a></h2>
         <p class="lead">{{post.text}}</p>
-        <hr class="my-4">
         <p>{{post.user.username}}</p>
         <p><em>{{post.date}}</em></p>
-        <a class="btn btn-primary btn-lg" href="/posts/{{post.id}}" role="button">Learn more</a>
+        <a class="btn btn-primary" href="/posts/{{post.id}}" role="button">Learn more</a>
+        <hr class="my-4">
     </div>
 </div>
 
@@ -28,18 +23,21 @@ Blog
 
 
 <div class="row">
-    <div class="col-6 offset-3">
-        <form method="post">
-            <div class="form-group">
-                <label for="posttitle">Post Title</label>
-                <input type="text" name="posttitle" class="form-control" id="posttitle">
-            </div>
-            <div class="form-group">
-                <label for="posttest">Post Content</label>
-                <textarea rows="6" name="posttext" class="form-control" id="posttest"></textarea>
-            </div>
-            <button type="submit" class="btn btn-primary">Post</button>
-        </form>
+    <div class="col-8 offset-2">
+        <div class="alert alert-primary" role="alert">
+            <h4>Write a new blog post</h4>
+            <form method="post">
+                <div class="form-group">
+                    <label for="posttitle">Post Title</label>
+                    <input type="text" name="posttitle" class="form-control" id="posttitle">
+                </div>
+                <div class="form-group">
+                    <label for="posttest">Post Content</label>
+                    <textarea rows="6" name="posttext" class="form-control" id="posttest"></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Post</button>
+            </form>
+        </div>
     </div>
 </div>
 {% endblock content %}

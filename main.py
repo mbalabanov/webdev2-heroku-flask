@@ -9,6 +9,12 @@ from flask_mail import Mail, Message
 
 from model import db, User, Post, Comment
 import email_config
+import redis_client
+
+
+
+
+
 
 app = Flask(__name__)
 

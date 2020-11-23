@@ -4,8 +4,41 @@
 Home
 {% endblock title %}
 
-{% include 'navigation.html' %}
-
 {% block content %}
-<h1>Welcome</h1>
+
+<div class="row">
+    <div class="col-md-12 text-center">
+        <h2>Welcome to this Exercise Project</h2>
+        <img src= {{ url_for('static', filename = 'images/header-decoration1.jpg') }} alt="Abstract image" title="Mlog abstract image" class="img-fluid rounded-lg my-2">
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-4">
+        <div class="text-center border rounded-lg p-4 m-2">
+            <img src= {{ url_for('static', filename = 'images/square1.jpg') }} alt="First abstract square" title="Mlog abstract square" class="img-fluid rounded-lg">
+            <h3>Register a User Account</h3>
+            <p>Please register a user account and then login.</p>
+            <a class="btn btn-primary" href="/login">Register</a>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="text-center border rounded-lg p-4 m-2">
+            <img src= {{ url_for('static', filename = 'images/square2.jpg') }} alt="Second abstract square" title="Mlog abstract square" class="img-fluid rounded-lg">
+            <h3>View or Write a Blog Post</h3>
+            <p>Read the blog posts, comment on them or write your own.</p>
+            <a class="btn btn-primary" href="/blog">Blog</a>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="text-center border rounded-lg p-4 m-2">
+            <img src= {{ url_for('static', filename = 'images/square3.jpg') }} alt="First abstract square" title="Mlog abstract square" class="img-fluid rounded-lg">
+            <h3>Learn More about the Project</h3>
+            <p>Read the blog posts, comment on them or write your own.</p>
+            <a class="btn btn-primary" href="https://github.com/mbalabanov/webdev2-heroku-flask" target="_blank">Github</a>
+        </div>
+    </div>
+</div>
+
 {% endblock content %}
+
