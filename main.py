@@ -11,6 +11,7 @@ from model import db, User, Post, Comment
 import email_config
 import redis_client
 
+redis = redis_client.from_url(os.environ.get("REDIS_URL"))
 
 app = Flask(__name__)
 
@@ -271,6 +272,17 @@ def blog():
     current_user = request.user
 
     if request.method == "POST":
+        # check if user registered with token is the user sending this request
+        # in debug and locally, you can check the content with:
+        # redis.tinydb.storage.read()
+        csrf_token = request.form.get("csrf_token")
+        csrf_token_user = redis.get(csrf_token) or b""
+        csrf_token_user = csrf_token_user.decode()
+        if csrf_token_user != current_user.username:
+            return "CSRF TOKEN INVALID"
+        # invalidate token again
+        redis.delete(csrf_token)
+
         title = request.form.get("posttitle")
         text = request.form.get("posttext")
         post = Post(
@@ -297,7 +309,9 @@ def blog():
 
     if request.method == "GET":
         posts = db.query(Post).all()
-        return render_template("blog.html", posts=posts, user=request.user, active1="active")
+        csrf_token = str(uuid.uuid4())
+        redis.set(csrf_token, current_user.username)
+        return render_template("blog.html", posts=posts, user=request.user, active1="active", csrf_token=csrf_token)
 
 
 @app.route('/posts/<post_id>', methods=["GET", "POST"])
@@ -307,6 +321,14 @@ def posts(post_id):
     post = db.query(Post).filter(Post.id == post_id).first()
 
     if request.method == "POST":
+        csrf_token = request.form.get("csrf_token")
+        csrf_token_user = redis.get(csrf_token) or b""
+        csrf_token_user = csrf_token_user.decode()
+        if csrf_token_user != current_user.username:
+            return "CSRF TOKEN INVALID"
+        # invalidate token again
+        redis.delete(csrf_token)
+
         text = request.form.get("text")
         comment = Comment(
             text=text,
@@ -318,8 +340,10 @@ def posts(post_id):
         return redirect('/posts/{}'.format(post_id))
 
     elif request.method == "GET":
+        csrf_token = str(uuid.uuid4())
+        redis.set(csrf_token, current_user.username)
         comments = db.query(Comment).filter(Comment.post_id == post_id).all()
-        return render_template('posts.html', post=post, comments=comments, user=request.user, active1="active")
+        return render_template('posts.html', post=post, comments=comments, user=request.user, active1="active", csrf_token=csrf_token)
 
 
 @app.route('/users', methods=["GET"])

@@ -29,6 +29,12 @@ else:  # else use TinyDB
             else:
                 return None
 
+        def delete(self, *names):
+            for name in names:
+                self.tinydb.remove(Query()["name"] == name)
+            return True
+
+
         def set(self, name, value):
             self.tinydb.upsert({"name": name, "value": value}, Query()["name"] == name)
             return True
