@@ -16,27 +16,31 @@ Registration
     <div class="col-md-8 offset-md-2">
 
     {% if not logged_in %}
-        <form method="post">
+        <form onsubmit="return validateRegForm()" id="registerForm" method="post">
             <div class="form-group">
-                <label for="exampleInputUsername1">Username</label>
-                <input type="text" name="username" class="form-control" id="exampleInputUsername1"
-                       aria-describedby="usernameHelp">
+                <label for="username">Username</label>
+                <input type="text" name="username" class="form-control" id="username" aria-describedby="usernameHelp">
+                <p id="message0"></p>
             </div>
             <div class="form-group">
-                <label for="emailaddress">Email Address</label>
-                <input type="email" name="email" class="form-control" id="emailaddress"
-                       aria-describedby="emailaddress">
+                <label for="email">Email Address</label>
+                <input type="email" name="email" class="form-control" id="email" aria-describedby="emailaddress">
+                <p id="message1"></p>
             </div>
             <div class="form-group">
-                <label for="exampleInputPassword1">Password</label>
-                <input type="password" name="password" class="form-control" id="exampleInputPassword1">
+                <label for="password">Password</label>
+                <input type="password" name="password" class="form-control" id="password">
+                <p id="message2"></p>
             </div>
             <div class="form-group">
-                <label for="exampleInputPasswordRepeat1">Password-Repeat</label>
-                <input type="password" name="repeat" class="form-control" id="exampleInputPasswordRepeat1">
+                <label for="repeat">Password-Repeat</label>
+                <input type="password" name="repeat" class="form-control" id="repeat">
+                <p id="message3"></p>
             </div>
             <button type="submit" class="btn btn-primary">Register</button>
         </form>
+
+         <button class="btn btn-primary my-4" onclick="getAllValues()">Test</button>
 
     {% else %}
 
@@ -46,4 +50,7 @@ Registration
 
     </div>
 </div>
+
+c
+
 {% endblock content %}

@@ -32,10 +32,11 @@ Blog
     <div class="col-8 offset-2">
         <div class="alert alert-primary" role="alert">
             <h4>Write a new Blog Post</h4>
-            <form method="post">
+            <form id="postForm" onsubmit="return validatePostForm()" method="post">
                 <div class="form-group">
                     <label for="posttitle">Post Title</label>
                     <input type="text" name="posttitle" class="form-control" id="posttitle">
+                    <p id="message0"></p>
                 </div>
                 <div class="form-group">
                     <input type="text" hidden name="csrf_token"  class="form-control" id="csrf_token" value="{{csrf_token}}">
@@ -43,10 +44,14 @@ Blog
                 <div class="form-group">
                     <label for="posttest">Post Content</label>
                     <textarea rows="6" name="posttext" class="form-control" id="posttest"></textarea>
+                    <p id="message1"></p>
                 </div>
                 <button type="submit" class="btn btn-primary">Post</button>
             </form>
         </div>
     </div>
 </div>
+
+<script type="text/javascript" src="../static/js/postcheck.js"></script>
+
 {% endblock content %}

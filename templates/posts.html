@@ -40,10 +40,11 @@ Posts - {{post.title}}
 <div class="row mt-5">
     <div class="col-6 offset-3">
         <div class="alert alert-primary" role="alert">
-            <form method="post">
+            <form id="commentForm" onsubmit="return validateCommentForm()" method="post">
                 <div class="form-group">
                     <label for="commentInput">Write a Comment</label>
                     <input type="text" name="text" class="form-control" placeholder="Your comment..." id="commentInput">
+                    <p id="message0"></p>
                 </div>
                 <div class="form-group">
                     <input type="text" hidden name="csrf_token"  class="form-control" id="csrf_token" value="{{csrf_token}}">
@@ -53,5 +54,7 @@ Posts - {{post.title}}
         </div>
     </div>
 </div>
+
+<script type="text/javascript" src="../static/js/commentcheck.js"></script>
 
 {% endblock content %}

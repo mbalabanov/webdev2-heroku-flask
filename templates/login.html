@@ -17,17 +17,16 @@ Login
 
                 {% if not logged_in %}
 
-                <form method="post">
+                <form name="loginForm" onsubmit="return validateLoginForm()" method="post">
                     <div class="form-group">
-                        <label for="exampleInputUsername1">Username</label>
-                        <input type="text" name="username" class="form-control" id="exampleInputUsername1"
-                               aria-describedby="usernameHelp">
-                        <small id="usernameHelp" class="form-text text-muted">We'll never share your username with anyone
-                            else.</small>
+                        <label for="username">Username</label>
+                        <input type="text" name="username" class="form-control" id="username" aria-describedby="usernameHelp">
+                        <p id="username-message"></p>
                     </div>
                     <div class="form-group">
-                        <label for="exampleInputPassword1">Password</label>
-                        <input type="password" name="password" class="form-control" id="exampleInputPassword1">
+                        <label for="password">Password</label>
+                        <input type="password" name="password" class="form-control" id="password">
+                        <p id="password-message"></p>
                     </div>
                     <button type="submit" class="btn btn-primary">Login</button>
                 </form>
@@ -40,5 +39,7 @@ Login
 
             </div>
         </div>
+
+        <script type="text/javascript" src="../static/js/logincheck.js"></script>
 
     {% endblock content %}
