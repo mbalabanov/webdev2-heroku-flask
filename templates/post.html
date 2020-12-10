@@ -1,0 +1,60 @@
+{% extends "frame.html" %}
+
+{% block title %}
+Posts - {{post.title}}
+{% endblock title %}
+
+{% block content %}
+
+<div class="row mt-4 text-center">
+    <div class="col-md-12">
+        <h2>Post Details</h2>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-10 offset-md-1">
+        <h3 class="display-4">{{post.title}}</h3>
+        <p><em>{{post.created}}</em></p>
+        <p>Written by <span class="badge badge-secondary p-2">{{post.user.username}}</span></p>
+        <p class="lead">{{post.text}}</p>
+
+        {% if comments %}
+            <h4>Comments</h4>
+        {% else %}
+        <div class="alert alert-secondary" role="alert">
+            <h2>No Comments</h2>
+        </div>
+        {% endif %}
+
+        {% for comment in comments %}
+        <div class="alert alert-secondary" role="alert">
+            <p>{{comment.text}}</p>
+            <hr class="my-1">
+            <p><sup>Written by <strong>{{comment.user.username}}</strong> on {{comment.created}}</sup></p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<div class="row mt-5">
+    <div class="col-6 offset-3">
+        <div class="alert alert-primary" role="alert">
+            <form id="commentForm" onsubmit="return validateCommentForm()" method="post">
+                <div class="form-group">
+                    <label for="commentInput">Write a Comment</label>
+                    <input type="text" name="text" class="form-control" placeholder="Your comment..." id="commentInput">
+                    <p id="message0"></p>
+                </div>
+                <div class="form-group">
+                    <input type="text" hidden name="csrf_token"  class="form-control" id="csrf_token" value="{{csrf_token}}">
+                </div>
+                <button type="submit" class="btn btn-primary">Send</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript" src="{{ url_for('static', filename = 'js/commentcheck.js') }}"></script>
+
+{% endblock content %}

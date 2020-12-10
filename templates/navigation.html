@@ -1,6 +1,6 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark" style="background-color: #e3f2fd;">
     <a href="/"><img src= {{ url_for('static', filename = 'images/blogo.png') }} alt="Mlog Logo" title="Logo of Mlog" width="50px" class="mx-4"></a>
-    <a class="navbar-brand" href="/">MBLOG</a>
+    <a class="navbar-brand" href="{{url_for('main.index')}}">MBLOG</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
             aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -9,21 +9,20 @@
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
             <li class="nav-item {{active1}}">
-                <a class="nav-link" href="/blog">Blog</a>
+                <a class="nav-link" href="{{url_for('blog.posts')}}">Blog</a>
             </li>
             <li class="nav-item {{active2}}">
-                <a class="nav-link" href="/users">Users</a>
+                <a class="nav-link" href="{{url_for('user.users')}}">Users</a>
             </li>
             <li class="nav-item {{active3}}">
-                <a class="nav-link" href="/faq">FAQ</a>
+                <a class="nav-link" href="{{url_for('main.faq')}}">FAQ</a>
             </li>
             <li class="nav-item {{active4}}">
-                <a class="nav-link" href="/about">About</a>
+                <a class="nav-link" href="{{url_for('main.about')}}">About</a>
             </li>
-
             {% if not user %}
             <li class="nav-item {{active0}}">
-                <a class="nav-link" href="/registration">Register</a>
+                <a class="nav-link" href="{{url_for('user.registration')}}">Register</a>
             </li>
             {% endif %}
 
@@ -32,11 +31,11 @@
         {% if user %}
 
             <span class="text-white mr-2">User: {{user.username}}</span>
-            <a class="btn btn-light mr-2" role="button" href="/logout">Logout</a>
+            <a class="btn btn-light mr-2" role="button" href="{{url_for('user.logout')}}">Logout</a>
 
         {% else %}
 
-            <a class="btn btn-primary mx-2" href="/login">Login</a>
+            <a class="btn btn-primary mx-2" href="{{url_for('user.login')}}">Login</a>
 
         {% endif %}
 

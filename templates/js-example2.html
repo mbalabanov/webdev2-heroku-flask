@@ -1,0 +1,42 @@
+{% extends "frame.html" %}
+
+{% block title %}
+FAQ
+{% endblock title %}
+
+{% block content %}
+
+<div class="row">
+    <div class="col-md-12 text-center">
+        <h2>FAQ</h2>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Coin</th>
+                    <th>Exchange Rate (EURO)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <td style="min-width: 150px;">
+                    <select id="coinSelector" name="coin_symbol" style="min-width: 150px; width:100%" onchange="change_coin();">
+                        <option value="" disabled selected>Select your Coin</option>
+                        <option id="BTC" value="BTC"> Bitcoin (BTC)</option>
+                        <option id="ETH" value="ETH"> Ethereum (ETH)</option>
+                        <option id="XLM" value="XLM"> Lumen (XLM)</option>
+                    </select>
+                </td>
+                <td id="selectedCoinExchangeRate"></td>
+            </tbody>
+        </table>
+
+        <script type="text/javascript" src="static/js/coincalc.js"></script>
+
+    </div>
+</div>
+{% endblock content %}

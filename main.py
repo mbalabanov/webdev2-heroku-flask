@@ -1,371 +1,82 @@
-import datetime
-import hashlib
+import logging
 import os
-import uuid
-import re
+import sys
 
-from flask import Flask, render_template, request, make_response, redirect, url_for, flash
-from flask_mail import Mail, Message
+from flask import Flask, render_template, request
+from flask_wtf.csrf import CSRFError
 
-from model import db, User, Post, Comment
 import email_config
-import redis_client
+from extensions import csrf_protect, db, mail
+from sites import main, blog, user, provide_user
 
-redis = redis_client.from_url(os.environ.get("REDIS_URL"))
 
-app = Flask(__name__)
-
-# Keep this secret!
-# necessary for flash messages
-app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
-
-LOCALHOST_NAME = "localhost"
-LOCALHOST_PORT = 7890
-
-HOST_ADDR = os.getenv("HOST_ADDR", f'http://{LOCALHOST_NAME}:{LOCALHOST_PORT}')
-
-app.config.update(
+CONFIG = dict(
     DEBUG=True,
-    # EMAIL SETTINGS
     MAIL_SERVER=os.getenv("MAIL_SERVER", email_config.MAIL_SERVER),
     MAIL_PORT=int(os.getenv("MAIL_PORT", email_config.MAIL_PORT)),
     MAIL_USE_SSL=True,
     MAIL_USERNAME=os.getenv("MAIL_USERNAME", email_config.MAIL_USERNAME),
     MAIL_PASSWORD=os.getenv("MAIL_PASSWORD", email_config.MAIL_PASSWORD),
+    SQLALCHEMY_DATABASE_URI=os.getenv("DATABASE_URL", "sqlite:///blog.sqlite")
 )
 
-mail = Mail(app)
 
-db.create_all()
+def register_extensions(app):
+    db.initi_app(app)
+    mail.init_app(app)
+    csrf_protect.init_app(app)
 
-WEBSITE_LOGIN_COOKIE_NAME = "science/session_token"
-COOKIE_DURATION = 900  # in seconds
 
-# Make a regular expression for validating an Email
-# for custom mails use: '^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w+$'
-#EMAIL_REGEX = '^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w{2,3}$'
-EMAIL_REGEX = '^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$'
+def register_blueprints(app):
+    app.register_blueprint(blog.views.Blueprint)
+    app.register_blueprint(user.views.Blueprint)
+    app.register_blueprint(main.views.Blueprint)
 
-# EMAIL SENDER FOR ALL SITE NOTIFICATIONS
-SENDER = "beachvolley.vienna.park@gmail.com"
 
+def configure_logger(app):
+    handler = logging.StreamHandler(sys.stdout)
+    if not app.logger.handler:
+        app.logger.addHandler(handler)
 
-def check_email(email: str) -> bool:
-    return bool(re.search(EMAIL_REGEX, email))
 
+def create_app():
+    app= Flask(__name__.split(".")[0])
+    app.config.update(CONFIG)
+    app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
 
-def require_session_token(func):
-    """Decorator to require authentication to access routes"""
+    register_extensions(app)
+    register_blueprints(app)
 
-    def wrapper(*args, **kwargs):
-        session_token = request.cookies.get(WEBSITE_LOGIN_COOKIE_NAME)
-        redirect_url = request.path or '/'
+    configure_logger(app)
 
-        if not session_token:
-            app.logger.error('no token in request')
-            return redirect(url_for('login', redirectTo=redirect_url))
+    with app.app_context():
+        db.create_all()
 
-        user = db.query(User) \
-            .filter_by(session_cookie=session_token) \
-            .filter(User.session_expiry_datetime >= datetime.datetime.now()) \
-            .first()
+    return app
 
-        if not user:
-            app.logger.error(f'token {session_token} not valid')
-            return redirect(url_for('login', redirectTo=redirect_url))
 
-        app.logger.info(
-            f'authenticated user {user.username} with token {user.session_cookie} valid until {user.session_expiry_datetime.isoformat()}')
-        request.user = user
-        return func(*args, **kwargs)
+app = create_app()
 
-    # Renaming the function name:
-    wrapper.__name__ = func.__name__
-    return wrapper
-
-
-def provide_user(func):
-    """Decorator to read user info if available"""
-
-    def wrapper(*args, **kwargs):
-        session_token = request.cookies.get(WEBSITE_LOGIN_COOKIE_NAME)
-
-        if not session_token:
-            request.user = None
-            return func(*args, **kwargs)
-
-        user = db.query(User) \
-            .filter_by(session_cookie=session_token) \
-            .filter(User.session_expiry_datetime >= datetime.datetime.now()) \
-            .first()
-
-        request.user = user
-        return func(*args, **kwargs)
-
-    wrapper.__name__ = func.__name__
-    return wrapper
-
-
-@app.route('/', methods=["GET"])
-@provide_user
-def index():
-    return render_template("index.html", user=request.user)
-
-
-@app.route('/login', methods=["GET", "POST"])
-@provide_user
-def login():
-    if request.method == "POST":
-        username = request.form.get("username")
-        password = request.form.get("password")
-
-        # query, check if there is a user with this username in the DB
-        # user = db.query(User).filter(User.username == username).one()  # -> needs to find one, otherwise raises Error
-        # user = db.query(User).filter(User.username == username).first()  # -> find first entry, if no entry, return None
-        # users = db.query(User).filter(User.username == username).all()  # -> find all, always returns list. if not entry found, empty list
-
-        password_hash = hashlib.sha256(password.encode()).hexdigest()
-
-        # right way to find user with correct password
-        user = db.query(User) \
-            .filter(User.username == username, User.password_hash == password_hash) \
-            .first()
-
-        session_cookie = str(uuid.uuid4())
-        expiry_time = datetime.datetime.now() + datetime.timedelta(seconds=COOKIE_DURATION)
-
-        if user is None:
-            flash("Username or password is wrong", "warning")
-            app.logger.info(f"User {username} failed to login with wrong password.")
-            redirect_url = request.args.get('redirectTo', url_for('index'))
-            return redirect(url_for('login', redirectTo=redirect_url))
-        else:
-            user.session_cookie = session_cookie
-            user.session_expiry_datetime = expiry_time
-            db.add(user)
-            db.commit()
-            app.logger.info(f"User {username} is logged in")
-
-        redirect_url = request.args.get('redirectTo', url_for('index'))
-        response = make_response(redirect(redirect_url))
-        response.set_cookie(WEBSITE_LOGIN_COOKIE_NAME, session_cookie, httponly=True, samesite='Strict')
-        return response
-
-    elif request.method == "GET":
-        cookie = request.cookies.get(WEBSITE_LOGIN_COOKIE_NAME)
-        user = None
-
-        if cookie is not None:
-            user = db.query(User) \
-                .filter_by(session_cookie=cookie) \
-                .filter(User.session_expiry_datetime >= datetime.datetime.now()) \
-                .first()
-
-        if user is None:
-            logged_in = False
-        else:
-            logged_in = True
-
-        return render_template("login.html", logged_in=logged_in, user=request.user)
-
-
-@app.route("/registration", methods=["GET", "POST"])
-@provide_user
-def registration():
-    if request.method == "POST":
-        username = request.form.get("username")
-        email = request.form.get("email")
-        password = request.form.get("password")
-        repeat = request.form.get("repeat")
-
-        # check email valid
-        is_valid = check_email(email)
-        if not is_valid:
-            flash("Email is not a valid email", "warning")
-            return redirect(url_for("registration"))
-
-        if password != repeat:
-            flash("Password and repeat did not match!", "warning")
-            return redirect(url_for("registration"))
-
-        # check if email is already taken:
-        user = db.query(User).filter_by(email=email).first()
-        if user:
-            flash("Email is already taken", "warning")
-            return redirect(url_for("registration"))
-
-        # check if username is already taken in Database!
-        user = db.query(User).filter_by(username=username).first()
-        if user:
-            flash("Username is already taken", "warning")
-            return redirect(url_for('registration'))
-
-        password_hash = hashlib.sha256(password.encode()).hexdigest()
-        session_cookie = str(uuid.uuid4())
-
-        session_expiry_datetime = datetime.datetime.now() + datetime.timedelta(seconds=COOKIE_DURATION)
-
-        user = User(username=username,
-                    email=email,
-                    password_hash=password_hash,
-                    session_cookie=session_cookie,
-                    session_expiry_datetime=session_expiry_datetime)
-        db.add(user)
-        db.commit()
-        flash("Registration Successful!", "success")
-
-        # send registration confirmation email
-        msg = Message(
-            subject="WebDev Blog - Registration Successful",
-            sender=SENDER,
-            recipients=[email],
-            bcc=[SENDER]
-        )
-        msg.body = f"Hi {username}!\nWelcome to our WebDev Flask site!\nEnjoy!"
-        mail.send(msg)
-
-        # set cookie for the browser
-        response = make_response(redirect(url_for('index')))
-        response.set_cookie(WEBSITE_LOGIN_COOKIE_NAME, session_cookie, httponly=True, samesite='Strict')
-        return response
-
-    elif request.method == "GET":
-        return render_template("registration.html", user=request.user, active0="active")
-
-
-@app.route('/about', methods=["GET"])
-@provide_user
-def about():
-    return render_template("about.html", user=request.user, active4="active")
-
-
-@app.route('/faq', methods=["GET"])
-@require_session_token
-def faq():
-    return render_template("faq.html", user=request.user, active3="active")
-
-
-@app.route('/logout', methods=["GET"])
-@provide_user
-def logout():
-    response = make_response(redirect(url_for('index')))
-    response.set_cookie(WEBSITE_LOGIN_COOKIE_NAME, expires=0)
-
-    user = db.query(User) \
-        .filter_by(username=request.user.username) \
-        .first()
-
-    if user is not None:
-        # reset user
-        user.session_expiry_datetime = None
-        user.session_cookie = None
-        db.add(user)
-        db.commit()
-        app.logger.info(f"{user.username} has logged out.")
-
-    return response
-
-
-@app.route('/blog', methods=["GET", "POST"])
-@require_session_token
-def blog():
-    current_user = request.user
-
-    if request.method == "POST":
-        # check if user registered with token is the user sending this request
-        # in debug and locally, you can check the content with:
-        # redis.tinydb.storage.read()
-        csrf_token = request.form.get("csrf_token")
-        csrf_token_user = redis.get(csrf_token) or b""
-        csrf_token_user = csrf_token_user.decode()
-        if csrf_token_user != current_user.username:
-            return "CSRF TOKEN INVALID"
-        # invalidate token again
-        redis.delete(csrf_token)
-
-        title = request.form.get("posttitle")
-        text = request.form.get("posttext")
-        post = Post(
-            title=title, text=text,
-            user=current_user
-        )
-        db.add(post)
-        db.commit()
-
-        # send notification email
-        msg = Message(
-            subject="WebDev Blog - Registration Successful",
-            sender=SENDER,
-            recipients=[current_user.email]
-        )
-        msg.body = f"Hi {current_user.username}!\nWelcome to our WebDev Flask site!\nEnjoy!"
-        msg.html = render_template("new_post.html",
-                                   username=current_user.username,
-                                   link=f"{HOST_ADDR}/posts/{post.id}",
-                                   post=post)
-        mail.send(msg)
-
-        return redirect(url_for('blog'))
-
-    if request.method == "GET":
-        posts = db.query(Post).all()
-        csrf_token = str(uuid.uuid4())
-        redis.set(csrf_token, current_user.username)
-        return render_template("blog.html", posts=posts, user=request.user, active1="active", csrf_token=csrf_token)
-
-
-@app.route('/posts/<post_id>', methods=["GET", "POST"])
-@require_session_token
-def posts(post_id):
-    current_user = request.user
-    post = db.query(Post).filter(Post.id == post_id).first()
-
-    if request.method == "POST":
-        csrf_token = request.form.get("csrf_token")
-        csrf_token_user = redis.get(csrf_token) or b""
-        csrf_token_user = csrf_token_user.decode()
-        if csrf_token_user != current_user.username:
-            return "CSRF TOKEN INVALID"
-        # invalidate token again
-        redis.delete(csrf_token)
-
-        text = request.form.get("text")
-        comment = Comment(
-            text=text,
-            post=post,
-            user=current_user
-        )
-        db.add(comment)
-        db.commit()
-        return redirect('/posts/{}'.format(post_id))
-
-    elif request.method == "GET":
-        csrf_token = str(uuid.uuid4())
-        redis.set(csrf_token, current_user.username)
-        comments = db.query(Comment).filter(Comment.post_id == post_id).all()
-        return render_template('posts.html', post=post, comments=comments, user=request.user, active1="active", csrf_token=csrf_token)
-
-
-@app.route('/users', methods=["GET"])
-@require_session_token
-def users():
-    current_user = request.user
-
-    if request.method == "GET":
-        allusers = db.query(User).all()
-        return render_template("users.html", users=allusers, user=request.user, active2="active")
 
 @app.errorhandler(404)
 @provide_user
 def page_not_found(e):
-    return render_template('404.html', user=request.user), 404
+    return render_template('404.html', user=request.user, reason=e.description), 404
 
 
 @app.errorhandler(500)
 @provide_user
 def server_error(e):
-    return render_template('500.html', user=request.user), 500
+    return render_template('500.html', user=request.user, reason=e.description), 500
+
+
+@app.errorhandler(CSRFError)
+@provide_user
+def server_error(e):
+    return render_template('csrf_error.html', user=request.user, reason=e.description), 300
 
 
 if __name__ == '__main__':
+    LOCALHOST_NAME = "localhost"
+    LOCALHOST_PORT = 7890
     app.run(host=LOCALHOST_NAME, port=LOCALHOST_PORT)
