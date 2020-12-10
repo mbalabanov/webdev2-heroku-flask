@@ -2,7 +2,7 @@ import logging
 import os
 import sys
 
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, blueprints
 from flask_wtf.csrf import CSRFError
 
 import email_config
@@ -22,25 +22,19 @@ CONFIG = dict(
 
 
 def register_extensions(app):
-    db.initi_app(app)
+    db.init_app(app)
     mail.init_app(app)
     csrf_protect.init_app(app)
 
 
 def register_blueprints(app):
-    app.register_blueprint(blog.views.Blueprint)
-    app.register_blueprint(user.views.Blueprint)
-    app.register_blueprint(main.views.Blueprint)
-
-
-def configure_logger(app):
-    handler = logging.StreamHandler(sys.stdout)
-    if not app.logger.handler:
-        app.logger.addHandler(handler)
+    app.register_blueprint(blog.views.blueprint)
+    app.register_blueprint(user.views.blueprint)
+    app.register_blueprint(main.views.blueprint)
 
 
 def create_app():
-    app= Flask(__name__.split(".")[0])
+    app = Flask(__name__.split(".")[0])
     app.config.update(CONFIG)
     app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
 
@@ -53,6 +47,12 @@ def create_app():
         db.create_all()
 
     return app
+
+
+def configure_logger(app):
+    handler = logging.StreamHandler(sys.stdout)
+    if not app.logger.handlers:
+        app.logger.addHandler(handler)
 
 
 app = create_app()

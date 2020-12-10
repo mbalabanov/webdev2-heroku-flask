@@ -52,7 +52,7 @@ def login():
         user = None
 
         if cookie is not None:
-            user = user.query \
+            user = User.query \
                 .filter_by(session_cookie=cookie) \
                 .filter(User.session_expiry_datetime >= datetime.datetime.now()) \
                 .first()
@@ -91,7 +91,7 @@ def registration():
             return redirect(url_for("user.registration"))
 
         # check if username is already taken in Database!
-        user = user.query.filter_by(username=username).first()
+        user = User.query.filter_by(username=username).first()
         if user:
             flash("Username is already taken", "warning")
             return redirect(url_for('user.registration'))

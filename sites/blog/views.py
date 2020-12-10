@@ -5,7 +5,7 @@ from extensions import db, mail
 from model import Post, Comment
 from sites import SENDER, HOST_ADDR, require_session_token
 
-blueprint = Blueprint("user", __name__, url_prefix="/blog", static_folder="../../static")
+blueprint = Blueprint("blog", __name__, url_prefix="/blog", static_folder="../../static")
 
 @blueprint.route('/posts', methods=["GET", "POST"])
 @require_session_token

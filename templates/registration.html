@@ -27,6 +27,11 @@ Registration
                 <input type="email" name="email" class="form-control" id="email" aria-describedby="emailaddress">
                 <p id="message1"></p>
             </div>
+
+            <div class="form-group">
+                <input type="hidden" name="csrf_token" value="{{csrf_token()}}">
+            </div>
+
             <div class="form-group">
                 <label for="password">Password</label>
                 <input type="password" name="password" class="form-control" id="password">

@@ -23,6 +23,11 @@ Login
                         <input type="text" name="username" class="form-control" id="username" aria-describedby="usernameHelp">
                         <p id="username-message"></p>
                     </div>
+
+                    <div class="form-group">
+                        <input type="hidden" name="csrf_token" value="{{csrf_token()}}">
+                    </div>
+
                     <div class="form-group">
                         <label for="password">Password</label>
                         <input type="password" name="password" class="form-control" id="password">
