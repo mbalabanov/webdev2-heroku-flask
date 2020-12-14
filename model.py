@@ -49,3 +49,5 @@ class Comment(db.Model):
     post_id = db.Column(db.Integer, db.ForeignKey("post.id"))
     post = db.relationship(Post)
 
+
+

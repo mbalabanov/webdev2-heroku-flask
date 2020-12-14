@@ -2,7 +2,10 @@ Flask
 gunicorn
 sqla-wrapper
 psycopg2
+Flask-Bcrypt==0.7.1
 Flask-Mail==0.9.1
+Flask-Migrate==2.5.3
+Flask-Script==2.0.6
 Flask-SQLAlchemy==2.4.4
 redis==3.5.3
 tinydb==4.2.0
