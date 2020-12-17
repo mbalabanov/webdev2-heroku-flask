@@ -30,7 +30,7 @@
 
         {% if user %}
 
-            <span class="text-white mr-2">User: {{user.username}}</span>
+            <a class="text-white mr-2" href="{{url_for('user.profile', username=user.username)}}">User: {{user.username}}</a>
             <a class="btn btn-light mr-2" role="button" href="{{url_for('user.logout')}}">Logout</a>
 
         {% else %}

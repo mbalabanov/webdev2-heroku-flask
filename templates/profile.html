@@ -1,0 +1,54 @@
+{% extends "frame.html" %}
+
+{% block title %}
+Profile {{user.username}}
+{% endblock title %}
+
+{% block css %}
+    <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/profile.css')}}">
+{% endblock css %}
+
+
+{% block content %}
+<h1>Profile</h1>
+<div class="profile_image">
+<img src="data:image/png;base64, {{profilepic_base64}}" alt="profilepic">
+</div>
+
+
+<div class="d-flex justify-content-center">
+    <form method="post" enctype="multipart/form-data">
+        <div class="form-group">
+            <label for="exampleInputUsername1">Username</label>
+            <input disabled type="text" name="username" class="form-control" id="exampleInputUsername1"
+                   aria-describedby="usernameHelp" value="{{user.username}}">
+        </div>
+
+        <div class="form-group">
+            <label for="emailInput">E-Mail</label>
+            <input type="email" name="email" class="form-control" id="emailInput" value="{{user.email}}">
+        </div>
+
+        <div class="form-group">
+            <label for="hobby">Hobby</label>
+            <input type="text" name="hobby" class="form-control" id="hobby" value="{{user.hobby}}">
+        </div>
+
+
+        <div class="form-group">
+            <input type="hidden" name="csrf_token" value="{{csrf_token()}}">
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-sm-6">Upload new Pic:</label>
+            <div class="col-sm-6">
+                <input type="file" name="profilepic"/>
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Update</button>
+    </form>
+
+</div>
+
+{% endblock content %}

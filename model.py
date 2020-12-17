@@ -16,6 +16,7 @@ class User(db.Model):
     email = db.Column(db.String(255), unique=True)
 
     hobby = db.Column(db.String(255), nullable=True, unique=False)
+    profilepic = db.Column(db.BLOB, nullable=True, unique=False)
 
     role = db.Column(db.String(55), nullable=False, default='admin')
     session_cookie = db.Column(db.String(255), nullable=True, unique=True)

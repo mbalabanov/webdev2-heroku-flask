@@ -1,5 +1,5 @@
+import base64
 import datetime
-import hashlib
 import logging
 import uuid
 
@@ -35,7 +35,7 @@ def login():
             logging.info(f"User {username} failed to login with wrong username or password.") # But username
             redirect_url = request.args.get('redirectTo', url_for('main.index'))
             return redirect(url_for('user.login', redirectTo=redirect_url))
-        elif bcrypt.check_password_hash(user.password_hash, password):
+        elif not bcrypt.check_password_hash(user.password_hash, password):
             flash("Username or password is wrong", "warning")
             logging.info(f"User {username} failed to login with wrong username or password.") # But actually password
 
@@ -101,7 +101,7 @@ def registration():
             flash("Username is already taken", "warning")
             return redirect(url_for('user.registration'))
 
-        password_hash = bcrypt.generate_password_hash(password).decode('utf-8') # hashlib.sha256(password.encode()).hexdigest()
+        password_hash = bcrypt.generate_password_hash(password).decode('utf-8')
         session_cookie = str(uuid.uuid4())
 
         session_expiry_datetime = datetime.datetime.now() + datetime.timedelta(seconds=COOKIE_DURATION)
@@ -135,6 +135,35 @@ def registration():
 
     elif request.method == "GET":
         return render_template("registration.html", user=request.user, active0="active")
+
+
+@blueprint.route('/profiles/<username>', methods=["GET", "POST"])
+@require_session_token
+def profile(username):
+    user = User.query.filter_by(username=username).one()
+    if request.method == "POST":
+        email = request.form.get("email")
+        if email != user.email:
+            user.email = email
+
+        hobby = request.form.get("hobby")
+        if hobby != user.hobby:
+            user.hobby = hobby
+
+        profilepic = request.files.get("profilepic")
+        if profilepic != user.profilepic:
+            user.profilepic = profilepic.stream.read()
+
+        db.session.add(user)
+        db.session.commit()
+
+        return redirect(url_for('user.profile', username=username))
+
+    elif request.method == "GET":
+        profilepic_base64 = base64.encodebytes(user.profilepic or b"").decode('ascii')
+
+        return render_template("profile.html", user=user, profilepic_base64=profilepic_base64)
+
 
 @blueprint.route('/users', methods=["GET"])
 @require_session_token

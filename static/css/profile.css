@@ -1,0 +1,145 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Open Sans-Light', sans-serif;
+}
+
+
+.head {
+    width: 120px;
+    height: 40px;
+    margin: 10px auto;
+    padding: auto;
+    align-content: center;
+}
+
+img {
+    display: block;
+    width: 120px;
+
+}
+
+
+.banner {
+    width: 800px;
+    height: 50px;
+    margin: 30px auto 30px auto;
+
+}
+
+h1 {
+    font-family: 'Open Sans-Light', sans-serif;
+    font-size: 24px;
+    font-weight: 200px;
+    text-align: center;
+    margin: auto;
+}
+
+h2 {
+    font-family: 'Open Sans-Light', sans-serif;
+    font-size: 14px;
+    text-align: center;
+    margin: 15px 15px 15px 15px;
+}
+
+
+.card {
+    width: 317px;
+    height: 400px;
+    background-color: #f7f7f7;
+    border: 0;
+    border-bottom-left-radius: 0px;
+    border-bottom-right-radius: 0px;
+    border-top-left-radius: 2px;
+    border-top-right-radius: 2px;
+    box-shadow: 0px 2px 2px rgb(0, 0, 0, 0.3);
+    overflow: hidden;
+    padding: 40px 40px;
+    position: relative;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 0;
+}
+
+.profile_image {
+    height: 120px;
+    width: 120px;
+    margin-left: auto;
+    margin-right: auto;
+    border-radius: 50%;
+    margin-bottom: 10px;
+    overflow: hidden;
+}
+
+.input-box {
+    height: 44px;
+    width: 274px;
+    border: 1px solid #d9d9d9;
+    border-radius: 3px;
+    background: #fff;
+    margin-left: auto;
+    margin-right: auto;
+    position: relative;
+    bottom: 345px;
+    padding-left: 8px;
+    padding-right: 8px;
+    padding-top: 3px;
+    padding-bottom: 3px;
+
+}
+
+#Email {
+    width: 258px;
+    height: 35px;
+    margin: auto;
+    border: 0;
+
+}
+
+.login {
+    height: 36px;
+    width: 274px;
+    border-radius: 3px;
+    background: rgb(53, 122, 232);
+    border: 1px solid rgb(47, 91, 183);
+    margin-left: auto;
+    margin-right: auto;
+    position: relative;
+    bottom: 335px;
+}
+
+#login-button {
+    font-family: Arial, sans-serif;
+    font-size: 13px;
+    color: white;
+    width: 272px;
+    height: 34px;
+    border: 0;
+    background-color: transparent;
+    cursor: pointer;
+}
+
+
+#p2 {
+    font-family: 'Open Sans-Light', sans-serif;
+    font-size: 12px;
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+    position: relative;
+    bottom: 180px;
+}
+
+.logo-strip {
+    background-repeat: no-repeat;
+    background-image: url(https://ssl.gstatic.com/accounts/ui/wlogostrip_230x17_1x.png);
+    margin-left: auto;
+    margin-right: auto;
+    background-size: 230px 17px;
+    width: 230px;
+    height: 17px;
+    position: relative;
+    bottom: 150px;
+}

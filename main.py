@@ -9,7 +9,6 @@ import email_config
 from extensions import csrf_protect, db, mail, migrate, bcrypt
 from sites import main, blog, user, provide_user
 
-
 CONFIG = dict(
     DEBUG=True,
     MAIL_SERVER=os.getenv("MAIL_SERVER", email_config.MAIL_SERVER),
@@ -19,8 +18,7 @@ CONFIG = dict(
     MAIL_PASSWORD=os.getenv("MAIL_PASSWORD", email_config.MAIL_PASSWORD),
     SQLALCHEMY_DATABASE_URI=os.getenv("DATABASE_URL", "sqlite:///blog.sqlite"),
     SQLALCHEMY_TRACK_MODIFICATIONS=True,
-    BCRYPT_LOG_ROUNDS=12,
-
+    BCRYPT_LOG_ROUNDS=12
 )
 
 
@@ -30,6 +28,7 @@ def register_extensions(app):
     csrf_protect.init_app(app)
     migrate.init_app(app, db)
     bcrypt.init_app(app)
+
 
 def register_blueprints(app):
     app.register_blueprint(blog.views.blueprint)
