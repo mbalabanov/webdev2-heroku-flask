@@ -6,7 +6,7 @@ from flask import Flask, render_template, request, blueprints
 from flask_wtf.csrf import CSRFError
 
 import email_config
-from extensions import csrf_protect, db, mail, migrate
+from extensions import csrf_protect, db, mail, migrate, bcrypt
 from sites import main, blog, user, provide_user
 
 
@@ -18,7 +18,9 @@ CONFIG = dict(
     MAIL_USERNAME=os.getenv("MAIL_USERNAME", email_config.MAIL_USERNAME),
     MAIL_PASSWORD=os.getenv("MAIL_PASSWORD", email_config.MAIL_PASSWORD),
     SQLALCHEMY_DATABASE_URI=os.getenv("DATABASE_URL", "sqlite:///blog.sqlite"),
-    SQLALCHEMY_TRACK_MODIFICATIONS=True
+    SQLALCHEMY_TRACK_MODIFICATIONS=True,
+    BCRYPT_LOG_ROUNDS=12,
+
 )
 
 
@@ -27,7 +29,7 @@ def register_extensions(app):
     mail.init_app(app)
     csrf_protect.init_app(app)
     migrate.init_app(app, db)
-
+    bcrypt.init_app(app)
 
 def register_blueprints(app):
     app.register_blueprint(blog.views.blueprint)

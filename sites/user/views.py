@@ -6,7 +6,7 @@ import uuid
 from flask import render_template, request, make_response, redirect, url_for, flash, Blueprint
 from flask_mail import Message
 
-from extensions import db, mail
+from extensions import db, mail, bcrypt
 from model import User
 from sites import provide_user, WEBSITE_LOGIN_COOKIE_NAME, SENDER, HOST_ADDR, check_email, COOKIE_DURATION, \
     require_session_token
@@ -20,20 +20,25 @@ def login():
         username = request.form.get("username")
         password = request.form.get("password")
 
-        password_hash = hashlib.sha256(password.encode()).hexdigest()
-
         # right way to find user with correct password
         user = User.query \
-            .filter(User.username == username, User.password_hash == password_hash) \
+            .filter(User.username == username) \
             .first()
 
         session_cookie = str(uuid.uuid4())
         expiry_time = datetime.datetime.now() + datetime.timedelta(seconds=COOKIE_DURATION)
 
+        redirect_url = request.args.get('redirectTo', url_for('main.index'))
+
         if user is None:
             flash("Username or password is wrong", "warning")
-            logging.info(f"User {username} failed to login with wrong password.")
+            logging.info(f"User {username} failed to login with wrong username or password.") # But username
             redirect_url = request.args.get('redirectTo', url_for('main.index'))
+            return redirect(url_for('user.login', redirectTo=redirect_url))
+        elif bcrypt.check_password_hash(user.password_hash, password):
+            flash("Username or password is wrong", "warning")
+            logging.info(f"User {username} failed to login with wrong username or password.") # But actually password
+
             return redirect(url_for('user.login', redirectTo=redirect_url))
         else:
             user.session_cookie = session_cookie
@@ -96,7 +101,7 @@ def registration():
             flash("Username is already taken", "warning")
             return redirect(url_for('user.registration'))
 
-        password_hash = hashlib.sha256(password.encode()).hexdigest()
+        password_hash = bcrypt.generate_password_hash(password).decode('utf-8') # hashlib.sha256(password.encode()).hexdigest()
         session_cookie = str(uuid.uuid4())
 
         session_expiry_datetime = datetime.datetime.now() + datetime.timedelta(seconds=COOKIE_DURATION)
