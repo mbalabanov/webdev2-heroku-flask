@@ -3,6 +3,9 @@
 *.py[cod]
 *$py.class
 
+# Email Settings
+email_config.py
+
 # Pycharm Files
 .idea/*
 *.sqlite
