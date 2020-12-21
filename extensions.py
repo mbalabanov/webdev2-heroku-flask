@@ -10,3 +10,4 @@ db = SQLAlchemy()
 csrf_protect = CSRFProtect()
 migrate = Migrate()
 
+git
