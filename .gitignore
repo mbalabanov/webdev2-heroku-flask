@@ -132,5 +132,3 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
-email_config.py
-email_config.py
